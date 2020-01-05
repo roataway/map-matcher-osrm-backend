@@ -3,7 +3,9 @@
 This repository explains how to install, configure and run OSRM (open source routing machine) for
 use as a **map matching** server. This system takes raw, noisy GPS readings, and snaps them to the
 nearest road. Without this functionality, some vehicles might appear to move off their designated
-routes.
+routes. This image illustrates the concept:
+
+![Route-matching illustrated](images/raw-matched.png "Example of route matching")
 
 
 ## Running OSRM with Docker
