@@ -18,11 +18,15 @@ in `/home/gps/osrm` under the user `gps`:
 1. Download the latest map for Moldova from http://download.geofabrik.de/europe/moldova.html,
    typically it is a matter of `wget http://download.geofabrik.de/europe/moldova-latest.osm.pbf`
 2. Trim down the map (see next section; this optional, but strongly recommended)
-3. Pre-process the data `docker run -t -v --rm "${PWD}:/data" osrm/osrm-backend osrm-extract -p /opt/car.lua /data/moldova-latest.osm.pbf`
-4. `docker run -t -v --rm "${PWD}:/data" osrm/osrm-backend osrm-partition /data/moldova-latest.osrm`
-5. `docker run -t -v --rm "${PWD}:/data" osrm/osrm-backend osrm-customize /data/moldova-latest.osrm`
+3. Pre-process the data `docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-extract -p /opt/car.lua /data/moldova-latest.osm.pbf`
+4. `docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-partition /data/moldova-latest.osrm`
+5. `docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-customize /data/moldova-latest.osrm`
 6. After running these commands, some of the generated files are owned by root; it is better to
    change ownership `chown gps:gps ./*.*`
+
+Note that you might have some containers that you don't need anymore. Run `docker ps -a` to
+inspect the list and figure out what you want to clean up. Consider adding the `--rm` parameter
+to the commands above, to avoid leaving traces.
 
 ### Trim down the map
 The map provided by Geofabrik includes all the roads in the entire country, even the ones in other
@@ -38,8 +42,23 @@ criteria:
 RTEC adds new routes, or when other transport systems join Roataway)
 - are a trolleybus or a bus route (i.e. we omit minibuses)
 
-**TODO** define the steps for doing so using either `osmosis`, or `josm` or `overpass-turbo`, or maybe
-something else. Talk to the OSM people about it.
+
+This is how it is done:
+
+1. Go to https://overpass-turbo.eu/
+2. Type the following query: `relation (6726484); >>; (._;>;); out meta;` (the relation ID corresponds
+   to a relation that includes all public transport in Chisinau and adjacent cities) and press `Run`
+3. The system will warn you that the result might be a large data set, press `continue anyway`
+4. When the query is complete, you'll see all the roads on the map, you can visually inspect them
+   to make sure everything is alright, then press `Export`.
+5. Choose `download as raw OSM data` and save it to a local directory.
+6. Open this file in `josm`
+7. Then go to `File\Save as`, choose the `osm pbf` format, and save it.
+8. Use this file as the input data for the pre-processing steps described above, it might be convenient
+   to save it as `moldova-latest.osm.pbf` so all the commands in the previous section will work "as is".
+
+Note: there must be an easier way to do this with `osmosis` from the command line, but for now this is
+the best way to get it done, that I'm aware of.
 
 ### Check if all is well
 
