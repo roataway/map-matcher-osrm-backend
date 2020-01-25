@@ -18,15 +18,11 @@ in `/home/gps/osrm` under the user `gps`:
 1. Download the latest map for Moldova from http://download.geofabrik.de/europe/moldova.html,
    typically it is a matter of `wget http://download.geofabrik.de/europe/moldova-latest.osm.pbf`
 2. Trim down the map (see next section; this optional, but strongly recommended)
-3. Pre-process the data `docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-extract -p /opt/car.lua /data/moldova-latest.osm.pbf`
-4. `docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-partition /data/moldova-latest.osrm`
-5. `docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-customize /data/moldova-latest.osrm`
-6. After running these commands, some of the generated files are owned by root; it is better to
-   change ownership `chown gps:gps ./*.*`
+3. Pre-process the data `docker run -t -v "${PWD}:/data" --rm osrm/osrm-backend osrm-extract -p /opt/car.lua /data/moldova-latest.osm.pbf`
+4. `docker run -t -v "${PWD}:/data" --rm osrm/osrm-backend osrm-partition /data/moldova-latest.osrm`
+5. `docker run -t -v "${PWD}:/data" --rm osrm/osrm-backend osrm-customize /data/moldova-latest.osrm`
+6. After running these commands, make sure all the files are owned by the user `gps`, run `chown gps:gps ./*.*`
 
-Note that you might have some containers that you don't need anymore. Run `docker ps -a` to
-inspect the list and figure out what you want to clean up. Consider adding the `--rm` parameter
-to the commands above, to avoid leaving traces.
 
 ### Trim down the map
 The map provided by Geofabrik includes all the roads in the entire country, even the ones in other
