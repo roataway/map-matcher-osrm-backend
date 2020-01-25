@@ -39,7 +39,19 @@ RTEC adds new routes, or when other transport systems join Roataway)
 - are a trolleybus or a bus route (i.e. we omit minibuses)
 
 
-This is how it is done:
+This is how it is done (the easy way):
+
+1. Install `osmium`. on Debian systems it is `apt install osmium-tool`
+2. Run `osmium getid -r moldova-latest.osm.pbf r6726484 -o chisinau-public-transport.osm.obf`
+   (`6726484` is a relation that includes all the data of all public transport networks in
+   Chisinau)
+3. Alternatively, if you want to include trolleybus routes and nothing else, use this command:
+   `osmium getid -r moldova-latest.osm.pbf r7390177 r8649765 r9478330 r9478295 r9478243 r9220092 r8219936 r6768372 r6768261 r6768260 r6768231 r6768200 r6768158 r6768073 r6768055 r6767907 r6767859 r6755788 r9220024 r6862391 r6755732 r6754654 r6754630 r6754620 r6754537 r6754503 r6754451 r6754453 r6768282 -o trolley-only.osm.pbf` (note that the magic numbers are the relation
+   IDs of each route, you can find them in `routes.csv` inside the `infrastructure-data` repo)
+3. Use the output file as an input for the previous section.
+
+This is an alternative way to accomplish the same thing. It takes more steps, but it is a
+point-and-click approach that some might prefer:
 
 1. Go to https://overpass-turbo.eu/
 2. Type the following query: `relation (6726484); >>; (._;>;); out meta;` (the relation ID corresponds
@@ -53,8 +65,6 @@ This is how it is done:
 8. Use this file as the input data for the pre-processing steps described above, it might be convenient
    to save it as `moldova-latest.osm.pbf` so all the commands in the previous section will work "as is".
 
-Note: there must be an easier way to do this with `osmosis` from the command line, but for now this is
-the best way to get it done, that I'm aware of.
 
 ### Check if all is well
 
